@@ -36,12 +36,10 @@ class AdminPanelProvider extends PanelProvider
             ->routes(function () {
                 Route::get('/password-reset', PasswordReset::class);
             })
-            ->favicon(asset('images/favicon.png'))
             ->default()
             ->id('admin')
             ->path('admin')
             ->login()
-            ->brandName('GeoBus')
             ->colors([
                 'primary' => Color::Green,
                 'gray' => Color::Slate,
