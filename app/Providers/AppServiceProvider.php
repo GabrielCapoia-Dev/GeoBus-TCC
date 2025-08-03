@@ -24,15 +24,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Injetando html direto na tela de login 
-        FilamentView::registerRenderHook(
-            PanelsRenderHook::AUTH_LOGIN_FORM_AFTER,
-            fn(): string => <<< 'HTML'
-            <div class='flex justify-end gap-1 text-sm'>
-                <a href="/admin/password-reset" class="text-primary-500">Esqueceu sua senha?</a>
-            </div>
-            HTML
-        );
     }
 
     /**
