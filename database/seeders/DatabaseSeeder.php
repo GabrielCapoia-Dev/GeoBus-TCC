@@ -17,7 +17,6 @@ class DatabaseSeeder extends Seeder
 
         // Lista de permissões que serão atribuídas à role Admin
         $permissionsList = [
-            'Acessar Painel',
             'Listar Usuários',
             'Criar Usuários',
             'Editar Usuários',
@@ -36,25 +35,17 @@ class DatabaseSeeder extends Seeder
             'Excluir Dominios de Email',
         ];
 
-        $accessPainelPermissions = [
-            'Acessar Painel',
-        ];
-
-        // Criação (ou recuperação) das permissões
+        // Criação das permissões
         foreach ($permissionsList as $permissionName) {
             Permission::firstOrCreate(['name' => $permissionName]);
         }
 
-        // Criação da rule (role) Admin
+        // Criação da rule Admin
         $adminRole = Role::firstOrCreate(['name' => 'Admin']);
         
-        // Criação da rule (role) Usuário
-        $accessPainelRule = Role::firstOrCreate(['name' => 'Acessar Painel']);
-
         // Atribui todas as permissões à role Admin
         $adminRole->syncPermissions($permissionsList);
         
-        $accessPainelRule->syncPermissions($accessPainelPermissions);
 
         // Criação do usuário admin
         $adminUser = User::firstOrCreate(

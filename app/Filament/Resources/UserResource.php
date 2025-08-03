@@ -81,7 +81,14 @@ class UserResource extends Resource
 
                 Forms\Components\Toggle::make('email_approved')
                     ->label('Verificação de acesso')
-                    ->default(true)
+                    ->inline(false)
+                    ->onColor('success')
+                    ->offColor('danger')
+                    ->onIcon('heroicon-s-check')
+                    ->offIcon('heroicon-s-x-mark')
+                    ->required()
+                    ->default(true),
+
 
             ]);
     }
@@ -114,6 +121,12 @@ class UserResource extends Resource
                 Tables\Columns\ToggleColumn::make('email_approved')
                     ->label('Verificação de Acesso')
                     ->sortable()
+                    ->disabled(function ($record) {
+                        $user = Auth::user();
+
+                        // Desativa o toggle se for o próprio usuário
+                        return $user && $record && $user->id === $record->id;
+                    })
                     ->visible(function () {
                         /** @var \App\Models\User|null $user */
                         $user = Auth::user();
@@ -125,7 +138,13 @@ class UserResource extends Resource
 
                         // Mostra só para Admin
                         return $user->hasRole('Admin');
-                    }),
+                    })
+                    ->inline(false)
+                    ->onColor('success')
+                    ->offColor('danger')
+                    ->onIcon('heroicon-s-check')
+                    ->offIcon('heroicon-s-x-mark')
+                    ->columnSpan(1),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Criado em')
@@ -137,12 +156,6 @@ class UserResource extends Resource
                     ->label('Atualizado em')
                     ->since()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                Tables\Columns\TextColumn::make('roles.name')
-                    ->label('Nivel de acesso')
-                    ->sortable()
-                    ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
 
@@ -191,13 +204,15 @@ class UserResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->whereHas('roles', function ($query) {
-            /** @var \App\Models\User|null $user */
-            $user = Auth::user();
-            if (!$user || $user->hasRole('Admin')) {
-                return $query;
-            }
-            $query->where('name', '!=', 'Admin');
-        });
+        $query = parent::getEloquentQuery();
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+
+        if ($user && !$user->hasRole('Admin')) {
+            // Apenas não-admins veem só usuários não-admins
+            $query->whereHas('roles', fn($q) => $q->where('name', '!=', 'Admin'));
+        }
+
+        return $query;
     }
 }
