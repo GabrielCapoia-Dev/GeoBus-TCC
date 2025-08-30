@@ -84,6 +84,8 @@ class PontosDeParadaResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('nome')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('latitude')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('longitude')
