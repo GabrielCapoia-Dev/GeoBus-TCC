@@ -24,6 +24,9 @@ class DominioEmailResource extends Resource
         if ($value > 0) {
             return $value;
         }
+
+        $teste = DominioEmail::all();
+        
         return null;
     }
 
