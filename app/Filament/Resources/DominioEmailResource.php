@@ -25,7 +25,7 @@ class DominioEmailResource extends Resource
             return $value;
         }
 
-        $teste = DominioEmail::all();
+        $teste4 = DominioEmail::all();
         
         return null;
     }
